@@ -35,11 +35,15 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     profilePic: {
-      type: Buffer,
+      type: String,
       required: false,
     },
     accessLevel: {
       type: Number,
+      required: true,
+    },
+    newUser: {
+      type: Boolean,
       required: true,
     },
   },

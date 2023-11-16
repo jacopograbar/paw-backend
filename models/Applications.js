@@ -9,10 +9,6 @@ const applicationSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
-    shelterID: {
-      type: String,
-      required: true,
-    },
     adopterID: {
       type: String,
       required: true,
@@ -21,6 +17,11 @@ const applicationSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    message: {
+      type: String,
+      required: true,
+    },
+
   },
   { timestamps: true }
 );

@@ -9,7 +9,7 @@ const petSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
-    type: {
+    petType: {
       type: String,
       required: true,
     },
@@ -22,6 +22,10 @@ const petSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    gender: {
+      type: String,
+      required: true,
+    },
     vaccinated: {
       type: Boolean,
       required: true,
@@ -30,7 +34,7 @@ const petSchema = new mongoose.Schema(
       type: Number,
       required: false,
     },
-    sheter: {
+    shelter: {
       type: String,
       required: true,
     },
@@ -39,7 +43,7 @@ const petSchema = new mongoose.Schema(
       required: false,
     },
     images: {
-      type: [Buffer],
+      type: [String],
       required: false,
     },
     notes: {
