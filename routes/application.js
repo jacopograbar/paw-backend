@@ -52,13 +52,33 @@ router.get("/:accessLevel/:userID", Utils.authenticateToken, (req, res) => {
   }
 });
 
-// 1. GET applications --> /applications/:userID
+// 2. GET application by ID --> /applications/:ID
+// Get application data given an ID
+
+router.get("/:id", Utils.authenticateToken, (req, res) => {
+  Application.findById(req.params.id)
+    .populate("shelter", "_id name email state address accessLevel profilePic")
+    .populate("adopter", "_id name email state address accessLevel profilePic")
+    .populate("pet", "_id name petType breed age gender images")
+    .then((application) => {
+      res.json(application);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        message: "Couldn't find application",
+        error: err,
+      });
+    });
+});
+
+// 3. GET applications --> /applications/user/:userID
 // Get all applications for a user
 
-// 2. POST applications --> /applications
+// 4. POST applications --> /applications
 // Create a new application obj
 
-// 3. DELETE applications --> /applications/:id
+// 5. DELETE applications --> /applications/:id
 // Delete an application by id
 
 module.exports = router;

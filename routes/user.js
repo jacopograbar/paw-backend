@@ -6,12 +6,6 @@ const path = require("path");
 
 // GET - get single user -------------------------------------------------------
 router.get("/:id", Utils.authenticateToken, (req, res) => {
-  if (req.user._id != req.params.id) {
-    return res.status(401).json({
-      message: "Not authorised",
-    });
-  }
-
   User.findById(req.params.id)
     .then((user) => {
       res.json(user);
@@ -19,7 +13,7 @@ router.get("/:id", Utils.authenticateToken, (req, res) => {
     .catch((err) => {
       console.log(err);
       res.status(500).json({
-        message: "Couldn't get user",
+        message: "Couldn't get user data",
         error: err,
       });
     });
