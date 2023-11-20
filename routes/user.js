@@ -3,6 +3,7 @@ const router = express.Router();
 const Utils = require("./../utils");
 const User = require("./../models/User");
 const path = require("path");
+const sharp = require("sharp");
 
 // GET - get single user -------------------------------------------------------
 router.get("/:id", Utils.authenticateToken, (req, res) => {
@@ -35,32 +36,48 @@ router.get("/list/:accessLevel", Utils.authenticateToken, (req, res) => {
 });
 
 // PUT - update user ---------------------------------------------
-router.put("/:id", Utils.authenticateToken, (req, res) => {
+router.put("/:id", Utils.authenticateToken, async (req, res) => {
   // validate request
-  if (!req.body) return res.status(400).send("Task content can't be empty");
+  if (!req.body) return res.status(400).send("Body request cannot be empty.");
 
   let avatarFilename = null;
 
   // if avatar image exists, upload!
-  if (req.files && req.files.avatar) {
+  if (req.files && req.files.profilePic) {
+    // console.log(req.files.profilePic);
+    const resizedFile = await sharp(req.files.profilePic.data)
+      .resize(500)
+      .toBuffer()
+      .then((data) => {
+        console.log("THIS, ", data);
+      });
+
+    // console.log(resizedFile);
+
     // upload avater image then update user
     let uploadPath = path.join(__dirname, "..", "public", "images");
-    Utils.uploadFile(req.files.avatar, uploadPath, (uniqueFilename) => {
+    Utils.uploadFile(req.files.profilePic, uploadPath, (uniqueFilename) => {
       avatarFilename = uniqueFilename;
-      // update user with all fields including avatar
+      // update user with all fields including profile pic
       updateUser({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
+        name: req.body.name,
         email: req.body.email,
-        avatar: avatarFilename,
+        animals: req.body.animals,
+        state: req.body.state,
+        address: req.body.address,
+        bio: req.body.bio,
+        profilePic: avatarFilename,
       });
     });
   } else {
-    // update user without avatar
+    // update user without profile pic
     updateUser({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
+      name: req.body.name,
       email: req.body.email,
+      animals: req.body.animals,
+      state: req.body.state,
+      address: req.body.address,
+      bio: req.body.bio,
     });
   }
 
