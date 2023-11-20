@@ -35,8 +35,9 @@ const petSchema = new mongoose.Schema(
       required: false,
     },
     shelter: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: true,
+      ref: 'User'
     },
     diseases: {
       type: [String],

@@ -5,13 +5,20 @@ const Utils = require("../utils");
 // application object schema
 const applicationSchema = new mongoose.Schema(
   {
-    petID: {
-      type: String,
+    pet: {
+      type: Schema.Types.ObjectId,
       require: true,
+      ref: 'Pet'
     },
-    adopterID: {
-      type: String,
+    adopter: {
+      type: Schema.Types.ObjectId,
       required: true,
+      ref: 'User'
+    },
+    shelter: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'User'
     },
     status: {
       type: Number,
