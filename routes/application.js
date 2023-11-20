@@ -77,26 +77,44 @@ router.get("/:id", Utils.authenticateToken, (req, res) => {
 router.post("/", (req, res) => {
   // validate request
   if (Object.keys(req.body).length === 0) {
-    return res.status(400).send({ message: "Application content can not be empty" });
+    return res
+      .status(400)
+      .send({ message: "Application content can not be empty" });
   }
-    // create new user
-    let newApplication = new Application(req.body);
-    newApplication
-      .save()
-      .then((application) => {
-        // success!
-        // return 201 status with user object
-        return res.status(201).json(application);
-      })
-      .catch((err) => {
-        console.log(err);
-        return res.status(500).send({
-          message: "Problem creating application",
-          error: err,
-        });
+  // create new user
+  let newApplication = new Application(req.body);
+  newApplication
+    .save()
+    .then((application) => {
+      // success!
+      // return 201 status with user object
+      return res.status(201).json(application);
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(500).send({
+        message: "Problem creating application",
+        error: err,
       });
-  });
+    });
+});
 
+// 4. PUT applications --> /applications/:id
+// Approve or reject an application by id
+router.put("/:id", Utils.authenticateToken, (req, res) => {
+  // validate request
+  if (!req.body.status)
+    return res.status(400).json({message:"Application status can't be empty"});
+
+  Application.findByIdAndUpdate(req.params.id, {status: req.body.status})
+    .then((application) => res.json(application))
+    .catch((err) => {
+      res.status(500).json({
+        message: "Problem processing application.",
+        error: err,
+      });
+    });
+});
 
 // 4. DELETE applications --> /applications/:id
 // Delete an application by id
