@@ -23,6 +23,7 @@ const applicationSchema = new mongoose.Schema(
     status: {
       type: Number,
       required: true,
+      default: 2,
     },
     message: {
       type: String,

@@ -72,13 +72,33 @@ router.get("/:id", Utils.authenticateToken, (req, res) => {
     });
 });
 
-// 3. GET applications --> /applications/user/:userID
-// Get all applications for a user
-
-// 4. POST applications --> /applications
+// 3. POST applications --> /applications
 // Create a new application obj
+router.post("/", (req, res) => {
+  // validate request
+  if (Object.keys(req.body).length === 0) {
+    return res.status(400).send({ message: "Application content can not be empty" });
+  }
+    // create new user
+    let newApplication = new Application(req.body);
+    newApplication
+      .save()
+      .then((application) => {
+        // success!
+        // return 201 status with user object
+        return res.status(201).json(application);
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(500).send({
+          message: "Problem creating application",
+          error: err,
+        });
+      });
+  });
 
-// 5. DELETE applications --> /applications/:id
+
+// 4. DELETE applications --> /applications/:id
 // Delete an application by id
 
 module.exports = router;
