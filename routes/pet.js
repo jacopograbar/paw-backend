@@ -44,5 +44,55 @@ router.get("/:id", Utils.authenticateToken, (req, res) => {
 
 // 3. POST pet --> /pets
 // Create new Pet
+router.post("/", Utils.authenticateToken, async (req, res) => {
+  // validate request
+  if (Object.keys(req.body).length === 0) {
+    return res.status(400).send({ message: "Pet data can not be empty" });
+  }
+
+  let imagesNames = [];
+
+  for (const file of req.files.images) {
+    // upload image then update user
+    let uploadPath = path.join(__dirname, "..", "public", "images");
+    const fileName = await Utils.uploadFile(file, uploadPath);
+    imagesNames.push(fileName);
+    console.log(imagesNames, fileName);
+  }
+
+  // create new pet
+  createPet({
+    name: req.body.name,
+    petType: req.body.petType,
+    breed: req.body.breed,
+    age: req.body.age,
+    diseases: req.body.diseases ? req.body.diseases : [],
+    vaccinated: req.body.vaccinated,
+    gender: req.body.gender,
+    notes: req.body.notes,
+    images: imagesNames,
+    friendliness: req.body.friendliness,
+    shelter: req.body.shelter,
+  });
+
+  // create new Pet
+  function createPet(body) {
+    let newPet = new Pet(body);
+    newPet
+      .save()
+      .then((pet) => {
+        // success!
+        // return 201 status with user object
+        return res.status(201).json(pet);
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(500).send({
+          message: "Problem creating pet",
+          error: err,
+        });
+      });
+  }
+});
 
 module.exports = router;

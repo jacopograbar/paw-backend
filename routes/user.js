@@ -3,7 +3,6 @@ const router = express.Router();
 const Utils = require("./../utils");
 const User = require("./../models/User");
 const path = require("path");
-const sharp = require("sharp");
 
 // GET - get single user -------------------------------------------------------
 router.get("/:id", Utils.authenticateToken, (req, res) => {
@@ -44,30 +43,18 @@ router.put("/:id", Utils.authenticateToken, async (req, res) => {
 
   // if avatar image exists, upload!
   if (req.files && req.files.profilePic) {
-    // console.log(req.files.profilePic);
-    const resizedFile = await sharp(req.files.profilePic.data)
-      .resize(500)
-      .toBuffer()
-      .then((data) => {
-        console.log("THIS, ", data);
-      });
-
-    // console.log(resizedFile);
-
     // upload avater image then update user
     let uploadPath = path.join(__dirname, "..", "public", "images");
-    Utils.uploadFile(req.files.profilePic, uploadPath, (uniqueFilename) => {
-      avatarFilename = uniqueFilename;
-      // update user with all fields including profile pic
-      updateUser({
-        name: req.body.name,
-        email: req.body.email,
-        animals: req.body.animals,
-        state: req.body.state,
-        address: req.body.address,
-        bio: req.body.bio,
-        profilePic: avatarFilename,
-      });
+    avatarFilename = await Utils.uploadFile(req.files.profilePic, uploadPath);
+    // update user with all fields including profile pic
+    updateUser({
+      name: req.body.name,
+      email: req.body.email,
+      animals: req.body.animals,
+      state: req.body.state,
+      address: req.body.address,
+      bio: req.body.bio,
+      profilePic: avatarFilename,
     });
   } else {
     // update user without profile pic

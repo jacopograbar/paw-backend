@@ -81,7 +81,7 @@ router.post("/", (req, res) => {
       .status(400)
       .send({ message: "Application content can not be empty" });
   }
-  // create new user
+  // create new application
   let newApplication = new Application(req.body);
   newApplication
     .save()
@@ -118,5 +118,17 @@ router.put("/:id", Utils.authenticateToken, (req, res) => {
 
 // 4. DELETE applications --> /applications/:id
 // Delete an application by id
+router.delete("/:id", Utils.authenticateToken, (req, res) => {
+
+  Application.findByIdAndDelete(req.params.id)
+    .then((application) => res.json(application))
+    .catch((err) => {
+      res.status(500).json({
+        message: "Problem deleting application.",
+        error: err,
+      });
+    });
+});
+
 
 module.exports = router;

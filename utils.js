@@ -47,7 +47,7 @@ class Utils {
     });
   }
 
-  uploadFile(file, uploadPath, callback) {
+  async uploadFile(file, uploadPath) {
     // get file extension (.jpg, .png etc)
     const fileExt = file.name.split(".").pop();
     // create unique file name
@@ -57,16 +57,17 @@ class Utils {
 
     // Resize image and move it to uploadPath
     sharp(file.data)
-      .resize(200, 200)
+      .resize(400, 400)
       .toFile(uploadPathFull)
       .then((info) => {
         console.log(info);
-        callback(uniqueFilename);
       })
       .catch((err) => {
         console.log(err);
         return false;
       });
+
+      return uniqueFilename;
   }
 }
 
