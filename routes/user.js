@@ -34,6 +34,20 @@ router.get("/list/:accessLevel", Utils.authenticateToken, (req, res) => {
     });
 });
 
+// PUT - update new user status ---------------------------------------------
+router.put("/status/:id", Utils.authenticateToken, async (req, res) => {
+  // validate request
+  if (!req.body) return res.status(400).send("Body request cannot be empty.");
+  User.findByIdAndUpdate(req.params.id, { newUser: false })
+    .then((user) => res.json(user))
+    .catch((err) => {
+      res.status(500).json({
+        message: "Problem updating use status",
+        error: err,
+      });
+    });
+});
+
 // PUT - update user ---------------------------------------------
 router.put("/:id", Utils.authenticateToken, async (req, res) => {
   // validate request
